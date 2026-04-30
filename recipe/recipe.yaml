@@ -1,0 +1,52 @@
+schema_version: 1
+
+context:
+  name: python-code-minimap
+  version: "0.1.1"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/python_code_minimap-${{ version }}.tar.gz
+  sha256: 451cb6872ab81721b1a7882e0779f370122527a3463bf29175f962678c3d3025
+
+build:
+  number: 1
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - code-minimap = code_minimap:main
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - uv-build >=0.9.0,<0.10.0
+    - pip
+  run:
+    - python >=${{ python_min }}
+
+tests:
+  - python:
+      imports:
+        - code_minimap
+      pip_check: true
+      python_version: ${{ python_min }}
+  - requirements:
+      run:
+        - pip
+        - python ${{ python_min }}.*
+    script:
+      - code-minimap --help
+
+about:
+  summary: Pure Python code minimap render.
+  license: MIT
+  license_file: LICENSE
+  homepage: https://github.com/joouha/python-code-minimap
+
+extra:
+  recipe-maintainers:
+    - jan-janssen
